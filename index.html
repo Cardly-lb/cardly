@@ -1872,21 +1872,25 @@ window.scrollTo(0,0);
 <!-- Load with high priority for faster animation initialization -->
 <script type="module" src="/index-8YjIcPvu.js"></script>
 <script>
-// Optimize animation loading - reduce font wait time
+// Optimize animation loading for both desktop and mobile - reduce font wait time
 (function() {
-  // Start font loading immediately
+  // Start font loading immediately (works on mobile too)
   if (document.fonts) {
     try {
-      // Preload system fonts to reduce wait
+      // Preload system fonts to reduce wait (mobile-friendly)
       document.fonts.load('400 1em system-ui');
       document.fonts.load('700 1em system-ui');
     } catch(e) {}
     
-    // Create a faster fonts.ready that times out after 1 second
+    // Create a faster fonts.ready that times out after 1 second (mobile optimized)
     const originalReady = document.fonts.ready;
+    // Use shorter timeout on mobile for faster animations
+    const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const timeout = isMobile ? 800 : 1000; // Faster on mobile
+    
     const fastReady = Promise.race([
       originalReady,
-      new Promise(resolve => setTimeout(() => resolve(), 1000))
+      new Promise(resolve => setTimeout(() => resolve(), timeout))
     ]);
     
     // Override to use faster version
@@ -1899,6 +1903,23 @@ window.scrollTo(0,0);
       // Fallback if override fails
       console.warn('Could not optimize font loading');
     }
+  }
+  
+  // Ensure animations work on mobile - enable touch events and optimize
+  const isMobileDevice = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  if (isMobileDevice) {
+    // Add mobile class for CSS targeting
+    document.documentElement.classList.add('mobile-device');
+    
+    // Optimize ScrollTrigger for mobile (reduce refresh rate for better performance)
+    // This will be applied when GSAP loads
+    window.__mobileOptimize = true;
+  }
+  
+  // Enable touch events
+  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+    document.documentElement.classList.add('touch-device');
   }
 })();
 </script>
