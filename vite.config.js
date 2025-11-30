@@ -65,7 +65,11 @@ export default defineConfig({
     // Optimize chunk size
     chunkSizeWarningLimit: 1000,
     // Enable minification (using esbuild which is built-in, faster than terser)
-    minify: 'esbuild'
+    minify: 'esbuild',
+    // Enable source maps for debugging (can disable in production)
+    sourcemap: false,
+    // Optimize asset handling
+    assetsInlineLimit: 4096
   },
   // Optimize dependencies
   optimizeDeps: {
