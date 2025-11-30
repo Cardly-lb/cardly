@@ -41,7 +41,39 @@ export default defineConfig({
             console.warn('⚠ Failed to copy scroll files:', error.message)
           }
         }
+        
+        // Copy main JavaScript bundle to public during build
+        const jsBundleSrc = join(process.cwd(), 'index-8YjIcPvu.js')
+        const jsBundleDest = join(process.cwd(), 'public', 'index-8YjIcPvu.js')
+        if (existsSync(jsBundleSrc)) {
+          try {
+            copyFileSync(jsBundleSrc, jsBundleDest)
+            console.log('✓ Main JavaScript bundle copied to public directory')
+          } catch (error) {
+            console.warn('⚠ Failed to copy JS bundle:', error.message)
+          }
+        }
       }
     }
   ],
+  build: {
+    rollupOptions: {
+      input: {
+        main: join(process.cwd(), 'index.html')
+      }
+    },
+    // Optimize chunk size
+    chunkSizeWarningLimit: 1000,
+    // Enable minification
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: false, // Keep console logs for debugging
+      }
+    }
+  },
+  // Optimize dependencies
+  optimizeDeps: {
+    include: ['gsap', 'scrolltrigger']
+  }
 })

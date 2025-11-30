@@ -32,3 +32,18 @@ if (existsSync(scrollSrc)) {
   console.warn('⚠ Scroll directory not found')
 }
 
+// Copy main JavaScript bundle
+const jsBundleSrc = join(process.cwd(), 'index-8YjIcPvu.js')
+const jsBundleDest = join(process.cwd(), 'public', 'index-8YjIcPvu.js')
+if (existsSync(jsBundleSrc)) {
+  try {
+    copyFileSync(jsBundleSrc, jsBundleDest)
+    console.log('✓ Main JavaScript bundle copied to public directory')
+  } catch (error) {
+    console.error('✗ Failed to copy JS bundle:', error.message)
+    process.exit(1)
+  }
+} else {
+  console.warn('⚠ JavaScript bundle not found')
+}
+
